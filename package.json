@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "storybook": "start-storybook -s public -p 9001 -c .storybook"
   },
   "keywords": [],
   "author": {
@@ -63,9 +64,17 @@
     }
   },
   "dependencies": {
+    "@material-ui/core": "^4.2.1",
     "electron-squirrel-startup": "^1.0.0",
+    "prop-types": "^15.7.2",
+    "ramda": "^0.26.1",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -77,9 +86,12 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.43",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.43",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "@storybook/react": "^5.1.9",
     "babel-loader": "^8.0.6",
+    "babel-plugin-react-css-modules": "^5.2.6",
     "css-loader": "^3.1.0",
     "electron": "5.0.7",
+    "mini-css-extract-plugin": "^0.8.0",
     "node-loader": "^0.6.0",
     "style-loader": "^0.23.1"
   }

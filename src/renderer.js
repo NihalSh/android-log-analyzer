@@ -25,14 +25,30 @@
  *  });
  * ```
  */
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+
+// import './index.css';
+
+// console.log('👋 This message is being logged by "renderer.js", included via webpack');
+
+// ReactDOM.render(
+//   <span styleName="custom">this works!</span>,
+//   document.getElementById('app'),
+// );
+
+
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import configureStore from './state';
+import App from 'containers/App';
 
-import './index.css';
-
-console.log('👋 This message is being logged by "renderer.js", included via webpack');
+const store = configureStore();
 
 ReactDOM.render(
-  <span>this works!</span>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('app'),
 );

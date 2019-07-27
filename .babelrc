@@ -1,5 +1,16 @@
 {
   "presets": [
     "@babel/preset-react"
+  ],
+  "plugins": [
+    [
+      "babel-plugin-react-css-modules",
+      {
+        "context": "./src",
+        "generateScopedName": "[path][name]__[local]--[hash:base64:5]",
+        "handleMissingStyleName": "throw",
+        "webpackHotModuleReloading": true
+      }
+    ]
   ]
 }
