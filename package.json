@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.2.1",
+    "classnames": "^2.2.6",
     "electron-squirrel-startup": "^1.0.0",
     "prop-types": "^15.7.2",
     "ramda": "^0.26.1",
