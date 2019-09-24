@@ -23,7 +23,7 @@ class VirtualScrollWindow extends React.PureComponent {
 
   getRowHeight() {
     // the height cannot be part of state
-    const ROW_HEIGHT = 15; // pixels
+    const ROW_HEIGHT = 20; // pixels
     return ROW_HEIGHT;
   }
 
@@ -181,7 +181,7 @@ class VirtualScrollWindow extends React.PureComponent {
     return (
       <div className={className} ref={this.containerRef}>
         <section onScroll={this.handleScroll} ref={this.scrollWindowRef} style={{ height, width, overflow: 'auto' }}>
-          <div ref={this.contentWrapperRef} style={{ position: 'relative', height: rowHeight * rowCount }}>
+          <div styleName="row" ref={this.contentWrapperRef} style={{ position: 'relative', height: rowHeight * rowCount }}>
             {rows}
           </div>
         </section>

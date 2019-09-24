@@ -7,3 +7,11 @@
   width: 100%;
   /* #TODO: end */
 }
+
+.row div {
+  width: 100%;
+}
+
+.row :nth-child(2n) {
+  background-color: #CFD8DC; /* Blue Grey 100 */
+}

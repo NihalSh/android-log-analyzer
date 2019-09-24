@@ -79,6 +79,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@electron-forge/cli": "^6.0.0-beta.43",
     "@electron-forge/maker-deb": "^6.0.0-beta.43",
