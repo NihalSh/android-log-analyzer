@@ -59,7 +59,7 @@ let fileData = "";
 
 function getNextRow(lastRowReceived) {
   const index = lastRowReceived + 1;
-  if (index >= fileData.length) {
+  if (index >= fileData.length || index < 0) {
     return null;
   }
   return fileData[index];

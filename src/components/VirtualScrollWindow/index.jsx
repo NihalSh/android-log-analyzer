@@ -18,7 +18,6 @@ class VirtualScrollWindow extends React.PureComponent {
     this.rows = [];
     this.numberOfRowsToRender = 0;
     this.lastRowRetrieved = -1; // zero-indexed
-    this.firstVisibleChild = 1; // one-indexed
   }
 
   getRowHeight() {
@@ -74,17 +73,6 @@ class VirtualScrollWindow extends React.PureComponent {
     return rowsToRender;
   }
 
-  removeRowsNotInViewport() {
-    const startIndex = this.firstVisibleChild - 2;
-    if (startIndex >= 0) {
-      this.lastRowRetrieved -= this.rows.length;
-      this.rows = this.rows.slice(startIndex, startIndex + this.numberOfRowsToRender);
-      this.firstVisibleChild = 2; // 2;
-      this.lastRowRetrieved += startIndex + this.rows.length;
-    }
-    this.setState({ rows: this.rows });
-  }
-
   setContainerDimensions() {
     const height = this.containerRef.current.clientHeight;
     const width = this.containerRef.current.clientWidth;
@@ -112,37 +100,67 @@ class VirtualScrollWindow extends React.PureComponent {
   handleScrollUp() {
     const ele = this.contentWrapperRef.current;
     const pivotParent = this.containerRef.current;
-    const indexOfLastVisibleRowElement = this.firstVisibleChild + this.numberOfRowsToRender - 2;
-    const bottomOfVisibleElement = pivotParent.getBoundingClientRect().bottom;
-    const lastVisibleRowElement = ele.querySelector(':nth-child(' + indexOfLastVisibleRowElement + ')');
-    const topOfTheBottomElement = lastVisibleRowElement.getBoundingClientRect().top;
-    if (bottomOfVisibleElement < topOfTheBottomElement) {
-      const row = this.getRowToAddAtTheTop();
-      if (row !== null) {
-        this.rows = [row, ...this.rows];
-        this.setState({ rows: this.rows });
-        this.firstVisibleChild = 1;
-        this.handleScrollUp();
-      }
+    const firstRowElement = ele.querySelector(`:nth-child(1)`);
+    const topOfVisibleElement = pivotParent.getBoundingClientRect().top;
+    const topOfFirstElement = firstRowElement.getBoundingClientRect().top;
+    let numberOfRowsToBeAdded = Math.ceil((topOfFirstElement - topOfVisibleElement) / this.getRowHeight());
+    if (numberOfRowsToBeAdded <= 0) {
+      return;
     }
+
+    const newRows = [];
+    this.lastRowRetrieved = this.lastRowRetrieved - this.rows.length - numberOfRowsToBeAdded;
+    if (this.lastRowRetrieved < 0) {
+      this.lastRowRetrieved = -1;
+    }
+    if (numberOfRowsToBeAdded > this.numberOfRowsToRender) {
+      numberOfRowsToBeAdded = this.numberOfRowsToRender;
+    }
+
+    let lastRowRetrievedBck = this.lastRowRetrieved;
+    while (numberOfRowsToBeAdded--) {
+      const row = this.getRowToAddAtTheBottom();
+      if (row === null) {
+        break;
+      }
+      this.lastRowRetrieved++;
+      newRows.push(row);
+    }
+    this.rows = [...newRows, ...this.rows];
+    this.rows = this.rows.slice(0, this.numberOfRowsToRender);
+    this.lastRowRetrieved = lastRowRetrievedBck + this.rows.length;
+    this.setState({ rows: this.rows });
   }
 
   handleScrollDown() {
     const ele = this.contentWrapperRef.current;
     const pivotParent = this.containerRef.current;
-    const firstRowElement = ele.querySelector(`:nth-child(${this.firstVisibleChild})`);
+    const firstRowElement = ele.querySelector(`:nth-child(1)`);
     const topOfVisibleElement = pivotParent.getBoundingClientRect().top;
     const bottomOfFirstElement = firstRowElement.getBoundingClientRect().bottom;
-    if (bottomOfFirstElement < topOfVisibleElement) {
-      const row = this.getRowToAddAtTheBottom();
-      if (row !== null) {
-        this.rows = [...this.rows, row];
-        this.setState({ rows: this.rows });
-        this.firstVisibleChild += 1; // this can cause problems as all the elements may not be rendered when using the querySelector
-        this.lastRowRetrieved = this.lastRowRetrieved + 1;
-        this.handleScrollDown();
-      }
+    let numberOfRowsToBeAdded = Math.ceil((topOfVisibleElement - bottomOfFirstElement) / this.getRowHeight());
+    if (numberOfRowsToBeAdded <= 0) {
+      return;
     }
+
+    const newRows = [];
+    if (numberOfRowsToBeAdded > this.numberOfRowsToRender) {
+      this.lastRowRetrieved += numberOfRowsToBeAdded - this.numberOfRowsToRender - 1;
+      numberOfRowsToBeAdded = this.numberOfRowsToRender;
+    }
+
+    while (numberOfRowsToBeAdded--) {
+      const row = this.getRowToAddAtTheBottom();
+      if (row === null) {
+        break;
+      }
+      this.lastRowRetrieved++;
+      newRows.push(row);
+    }
+
+    this.rows = [...this.rows, ...newRows];
+    this.rows = this.rows.slice(this.rows.length - this.numberOfRowsToRender, this.rows.length);
+    this.setState({ rows: this.rows });
   }
 
   lastScrollTopPosition = 0;
@@ -155,7 +173,6 @@ class VirtualScrollWindow extends React.PureComponent {
       this.handleScrollUp();
     }
     this.lastScrollTopPosition = latestScrollTopPosition;
-    this.removeRowsNotInViewport();
   }
 
   componentDidMount() {
