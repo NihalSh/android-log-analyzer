@@ -31,7 +31,7 @@ class VirtualScrollWindow extends React.PureComponent {
     const row = (
       <div
         key={index}
-        style={{ position: 'absolute', height: rowHeight, top: rowHeight * index, left: 0 }}
+        style={{ position: 'absolute', height: rowHeight, top: rowHeight * index, left: 0, whiteSpace: 'nowrap' }}
       >
         {rowData}
       </div>
@@ -167,9 +167,10 @@ class VirtualScrollWindow extends React.PureComponent {
 
   handleScroll = (e) => {
     const latestScrollTopPosition = this.scrollWindowRef.current.scrollTop;
-    if (latestScrollTopPosition - this.lastScrollTopPosition > 0) {
+    const diff = latestScrollTopPosition - this.lastScrollTopPosition;
+    if (diff > 0) {
       this.handleScrollDown();
-    } else {
+    } else if (diff < 0) {
       this.handleScrollUp();
     }
     this.lastScrollTopPosition = latestScrollTopPosition;
@@ -198,7 +199,14 @@ class VirtualScrollWindow extends React.PureComponent {
     return (
       <div className={className} ref={this.containerRef}>
         <section onScroll={this.handleScroll} ref={this.scrollWindowRef} style={{ height, width, overflow: 'auto' }}>
-          <div styleName="row" ref={this.contentWrapperRef} style={{ position: 'relative', height: rowHeight * rowCount }}>
+          <div
+            ref={this.contentWrapperRef}
+            style={{
+              position: 'relative',
+              height: rowHeight * rowCount,
+            }}
+            styleName="row"
+          >
             {rows}
           </div>
         </section>

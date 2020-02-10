@@ -93,6 +93,7 @@
     "babel-plugin-react-css-modules": "^5.2.6",
     "css-loader": "^3.4.2",
     "electron": "5.0.7",
+    "electron-devtools-installer": "^2.2.4",
     "mini-css-extract-plugin": "^0.8.2",
     "node-loader": "^0.6.0",
     "style-loader": "^0.23.1"
